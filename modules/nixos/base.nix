@@ -8,7 +8,7 @@
 }:
 
 {
-  system.stateVersion = "24.05";
+  system.stateVersion = "26.05";
 
   nixpkgs.config = {
     allowUnfreePredicate =
@@ -42,7 +42,7 @@
 
   users.users = {
     root = {
-      hashedPassword = "$y$j9T$s66mNSUxB3hgkFT07I3r5/$ke1ga.qcfuAxTtOlY24vnR5NPkNESOIqKgUO2Rt7YxB";
+      hashedPassword = "$y$j9T$0Jov5InmqMQo5doHTgyyz/$hLAqsSNrI904auuedUB58KxHEFKoK67W2F11pmoRvJ2";
     };
 
     team = {
@@ -52,7 +52,7 @@
     };
 
     admin = {
-      hashedPassword = "$y$j9T$s66mNSUxB3hgkFT07I3r5/$ke1ga.qcfuAxTtOlY24vnR5NPkNESOIqKgUO2Rt7YxB";
+      hashedPassword = "$y$j9T$0Jov5InmqMQo5doHTgyyz/$hLAqsSNrI904auuedUB58KxHEFKoK67W2F11pmoRvJ2";
       extraGroups = [
         "wheel"
         "networkmanager"
@@ -62,16 +62,17 @@
     };
   };
 
-  time.timeZone = "Australia/Perth"; # TODO: is this correct?
+  time.timeZone = "Pacific/Auckland"; # TODO: is this correct?
   # services.automatic-timezoned.enable = true;
 
   # Some basic good defaults:
   boot.initrd.systemd.enable = true;
   boot.tmp.useTmpfs = true;
-  boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_12; # latest lts
+  boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_18; # latest lts
   zramSwap.enable = true;
   boot.kernelParams = [ "console=tty0" ];
   hardware.graphics.enable = true;
+  services.dbus.enable = true;
 
   nix.enable = false;
   # nix.settings = {
@@ -96,8 +97,8 @@
   ];
 
   networking.hosts = {
-    "170.64.169.12" = [ "sppcontests.org" ];
     "170.64.253.143" = [ "contest.sppcontests.org" ];
+    "170.64.242.1" = [ "icpc.sppcontests.org" ];
   };
 
   # common pain point: https://github.com/NixOS/nixpkgs/issues/180175
@@ -126,6 +127,21 @@
   };
   services.printing.enable = true;
 
+  hardware.printers = {
+    ensurePrinters = [
+      {
+        name = "FollowMe";
+        location = "";
+        deviceUri = "lpd://mvin559@print.auckland.ac.nz/FollowMe-BW";
+        model = "drv:///sample.drv/generic.ppd";
+        ppdOptions = {
+          PageSize = "A4";
+        };
+      }
+    ];
+    ensureDefaultPrinter = "FollowMe";
+  };
+
   hardware.pulseaudio.enable = false;
   services.pipewire = {
     enable = true;
@@ -141,7 +157,7 @@
     policies = {
       # https://mozilla.github.io/policy-templates
       Homepage = {
-        URL = "http://contest.sppcontests.org";
+        URL = "http://icpc.sppcontests.org";
         Locked = true;
       };
     };
@@ -162,6 +178,7 @@
     htop
     btop
     wget
+    xarchiver
 
     flake.packages.${pkgs.system}.ubuntu
 
@@ -172,12 +189,13 @@
     vscode
     gedit
     geany
-    (pkgs.lowPrio python311Full) # includes idle, lower priority so ubuntu python takes precedence
+    # includes idle, lower priority so ubuntu python takes precedence
+    (lib.lowPrio (pkgs.python314.withPackages (ps: [ ps.tkinter ])))
   ];
 
   environment.ldso = flake.packages.${pkgs.system}.ubuntu.ldso;
 
-  services.nixseparatedebuginfod.enable = true;
+  services.nixseparatedebuginfod2.enable = true;
 
   programs.git.enable = true;
 }

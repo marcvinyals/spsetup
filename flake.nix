@@ -2,7 +2,7 @@
   description = "SPCPA contestant image setup";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     blueprint.url = "github:numtide/blueprint";
 
     nixos-generators = {

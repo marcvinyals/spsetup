@@ -5,11 +5,11 @@ let
 
   # generated via `nix run nixpkgs#nix-prefetch-docker domjudge/judgehost`
   image = pkgs.dockerTools.pullImage {
-    imageName = "domjudge/judgehost";
-    imageDigest = "sha256:62638543b44a69a00a076c410671768d702f76f4f035d9a58dfb13794a9f0089";
-    sha256 = "sr29ID9XRojQcKuIf0Iztf+QJz/V9BNmiQ2B0XJUmmo=";
-    finalImageName = "domjudge/judgehost";
-    finalImageTag = "latest";
+  imageName = "domjudge/judgehost";
+  imageDigest = "sha256:cdf148192b96db44d724e41440ba55a0ea3146affb9c1651a14024ca526442d5";
+  hash = "sha256-hg6hkTi81bx1NOBxZFBPCPSee4v47bosUkAxWoTxc6I=";
+  finalImageName = "domjudge/judgehost";
+  finalImageTag = "latest";
   };
 
   rootfs1 =
@@ -48,6 +48,7 @@ let
       cat >ldso.c <<EOF
       #include <unistd.h>
       #include <errno.h>
+      #include <stdlib.h>
       int main(int argc, char *argv[], char *envp[]) {
         char **args = malloc(sizeof(char*) * (argc + 2));
         if (!args) return 12;
